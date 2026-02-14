@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+
+# Packaging/build
+build/
+dist/
+*.egg-info/
+
+# Local artifacts and hardware dumps
+backups/
+downloads/
+*.bin
+*.img
+*.uf2
+
+# Third-party/vendor checkouts
+third_party/
+
+# Editors/OS
+.DS_Store
+.vscode/
+.idea/

@@ -1,0 +1,33 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "circuithack"
+version = "0.1.0"
+description = "Local MCP and CLI tooling for CircuitMess devices (Codee 2.0 first)."
+requires-python = ">=3.10"
+dependencies = [
+  "mcp>=1.0.0",
+  "pyserial>=3.5",
+  "requests>=2.31.0",
+  "esptool>=4.8.1",
+  "mpremote>=1.25.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0.0",
+]
+
+[dependency-groups]
+dev = [
+  "pytest>=8.0.0",
+]
+
+[project.scripts]
+circuithack-cli = "circuithack.cli:main"
+circuithack-mcp = "circuithack.mcp_server:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
