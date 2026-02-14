@@ -1,0 +1,4 @@
+[wokwi]
+version = 1
+firmware = "third_party/Codee-Firmware/build/Codee-Firmware.elf"
+elf = "third_party/Codee-Firmware/build/Codee-Firmware.elf"

@@ -93,3 +93,9 @@ save = CodeeSave("/tmp/codee_launcher.json")
 app = CodeeLauncherApp(display, inputs, audio, save)
 app.step()
 ```
+
+## Wokwi project for this port
+- Self-contained Wokwi launcher project: `/Users/abossard/Desktop/projects/circuithack/ports/codee/wokwi`
+- Includes vendored `codee/` modules plus `main.py` and `diagram.json`.
+- Lint with:
+  - `uv run circuithack-wokwi lint ports/codee/wokwi`

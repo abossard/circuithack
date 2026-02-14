@@ -1,0 +1,6 @@
+# Wokwi Configuration File
+# Reference: https://docs.wokwi.com/vscode/project-config
+[wokwi]
+version = 1
+firmware = '../codee-sim/ESP32_GENERIC_S3-20251209-v1.27.0.bin'
+elf = '../codee-sim/ESP32_GENERIC_S3-20251209-v1.27.0.bin'
