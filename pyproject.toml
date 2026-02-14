@@ -28,6 +28,7 @@ dev = [
 [project.scripts]
 circuithack-cli = "circuithack.cli:main"
 circuithack-mcp = "circuithack.mcp_server:main"
+circuithack-sync-games = "circuithack.gamesync:main"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

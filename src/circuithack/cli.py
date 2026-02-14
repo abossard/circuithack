@@ -8,6 +8,7 @@ from .codee import FIRMWARE_SOURCES, decode_codee_savegame, flash_codee_firmware
 from .device import detect_codee_candidates, list_serial_devices, resolve_codee_port
 from .firmware import download_asset, latest_stock_asset
 from .flash import enter_programmer_mode, write_flash_zero
+from .gamesync import sync_game_sources
 from .micropython import build_and_flash_micropython
 from .runner import run_script
 
@@ -143,6 +144,16 @@ def cmd_decode_nvs(args: argparse.Namespace) -> None:
     )
 
 
+def cmd_sync_games(args: argparse.Namespace) -> None:
+    _print(
+        sync_game_sources(
+            dest_root=args.dest_root,
+            manifest_path=args.manifest_path,
+            selected_sources=args.source,
+        )
+    )
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="circuithack-cli")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -221,6 +232,19 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--nvs-path", required=True)
     s.add_argument("--tool-dir")
     s.set_defaults(func=cmd_decode_nvs)
+
+    s = sub.add_parser(
+        "sync-games",
+        help="Clone/update upstream MicroPython game repos into third_party_games and write lock manifest.",
+    )
+    s.add_argument("--dest-root", default="third_party_games")
+    s.add_argument("--manifest-path")
+    s.add_argument(
+        "--source",
+        action="append",
+        help="Source id or owner/repo. Repeat to sync only selected sources.",
+    )
+    s.set_defaults(func=cmd_sync_games)
 
     return p
 

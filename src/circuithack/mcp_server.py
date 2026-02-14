@@ -19,6 +19,7 @@ from .device import (
 )
 from .firmware import download_asset, latest_stock_asset
 from .flash import enter_programmer_mode, write_flash_zero
+from .gamesync import sync_game_sources
 from .micropython import build_and_flash_micropython
 from .runner import run_script
 from .util import format_cmd
@@ -210,6 +211,19 @@ def decode_codee_nvs_backup(
     return decode_codee_savegame(
         nvs_path=nvs_path,
         tool_dir=tool_dir,
+    )
+
+
+@mcp.tool()
+def sync_codee_game_sources(
+    dest_root: str = "third_party_games",
+    manifest_path: str | None = None,
+    source: list[str] | None = None,
+) -> dict:
+    return sync_game_sources(
+        dest_root=dest_root,
+        manifest_path=manifest_path,
+        selected_sources=source,
     )
 
 

@@ -1,0 +1,19 @@
+{
+  "generated_at": "2026-02-14T21:10:08+00:00",
+  "dest_root": "third_party_games",
+  "sources": [
+    {
+      "id": "thumby-virtual-pet",
+      "repo": "SarahBass/Thumby-Virtual-Pet",
+      "repo_url": "https://github.com/SarahBass/Thumby-Virtual-Pet.git",
+      "description": "MicroPython virtual pet prototype.",
+      "local_path": "third_party_games/thumby-virtual-pet",
+      "branch": "main",
+      "commit": "64912b2cbf35cf4681c055d4ef520ef4c552056d",
+      "commit_short": "64912b2",
+      "commit_time": "2022-10-04T10:37:23-07:00",
+      "synced_at": "2026-02-14T21:10:08+00:00"
+    }
+  ],
+  "count": 1
+}

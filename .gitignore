@@ -28,6 +28,9 @@ downloads/
 
 # Third-party/vendor checkouts
 third_party/
+third_party_games/*
+!third_party_games/
+!third_party_games/sources.lock.json
 
 # Editors/OS
 .DS_Store

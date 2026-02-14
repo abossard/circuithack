@@ -32,6 +32,8 @@ uv run circuithack-cli restore-full-backup --port /dev/cu.usbmodemXXXX --backup-
 uv run circuithack-cli flash-firmware --port /dev/cu.usbmodemXXXX --source official
 uv run circuithack-cli flash-firmware --port /dev/cu.usbmodemXXXX --source local-build --build-dir third_party/Codee-Firmware/build
 uv run circuithack-cli decode-nvs --nvs-path backups/codee-nvs-YYYYmmdd-HHMMSS.bin
+uv run circuithack-cli sync-games --dest-root third_party_games
+uv run python scripts/sync_game_sources.py --dest-root third_party_games --source thumby-color-games
 ```
 
 ## MCP server
@@ -53,6 +55,21 @@ Available MCP tools:
 - `restore_codee_full_flash_backup`
 - `flash_codee_firmware`
 - `decode_codee_nvs_backup`
+- `sync_codee_game_sources`
+
+## Codee port kit
+- `ports/codee/` contains a MicroPython adapter layer:
+  - `codee_display.py`
+  - `codee_input.py`
+  - `codee_audio.py`
+  - `codee_save.py`
+- First game target included: `ports/codee/game_2048.py`
+- Integration notes: `ports/codee/README.md`
+
+## Upstream game source sync
+- `sync-games` clones/updates curated upstream repositories into `third_party_games/`.
+- It writes commit-locked metadata in `third_party_games/sources.lock.json`.
+- You can pass repeated `--source` values (source id or `owner/repo`) to sync only a subset.
 
 ## Reliable Mac connection checklist (Codee)
 - Use a known USB data cable (not charge-only).
