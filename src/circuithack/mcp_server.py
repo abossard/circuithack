@@ -10,6 +10,7 @@ from .codee import (
     decode_codee_savegame,
     flash_codee_firmware as flash_codee_firmware_flow,
 )
+from .env import auto_load_env
 from .device import (
     detect_codee_candidates,
     list_serial_devices,
@@ -228,6 +229,7 @@ def sync_codee_game_sources(
 
 
 def main() -> None:
+    auto_load_env()
     mcp.run()
 
 

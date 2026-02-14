@@ -36,3 +36,6 @@ third_party_games/*
 .DS_Store
 .vscode/
 .idea/
+
+# Local secrets
+.env

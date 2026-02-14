@@ -7,6 +7,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Iterable
 
+from .env import auto_load_env
 from .util import run_cmd
 
 
@@ -239,6 +240,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main() -> None:
+    auto_load_env()
     args = build_parser().parse_args()
     result = sync_game_sources(
         dest_root=args.dest_root,

@@ -1,6 +1,6 @@
 # Codee Port Kit (MicroPython)
 
-This folder contains a hardware-agnostic adapter layer and a first target game (`2048`) for Codee 2.0.
+This folder contains a hardware-agnostic adapter layer plus a small game suite for Codee 2.0.
 
 ## Files
 - `codee_display.py`: display abstraction (`CodeeDisplay`) plus `MemoryDisplayBackend` for simulation/tests.
@@ -8,12 +8,39 @@ This folder contains a hardware-agnostic adapter layer and a first target game (
 - `codee_audio.py`: tone/effect helper (`CodeeAudio`).
 - `codee_save.py`: JSON save/load helper (`CodeeSave`) with atomic writes.
 - `game_2048.py`: playable 2048 game model + render loop (`Game2048App`).
+- `game_tinycity.py`: TinyCity-inspired city-builder model + app (`TinyCityModel`, `TinyCityApp`).
+- `game_chess.py`: pure chess model + app shell with lightweight AI (`ChessModel`, `ChessApp`).
+- `game_launcher.py`: multi-game launcher (`CodeeLauncherApp`) for 2048, TinyCity, and Chess.
 
 ## Button mapping in `Game2048App`
 - `A` -> left
 - `B` -> right
 - `C` -> up
 - `D` -> down
+
+## Button mapping in `TinyCityApp`
+- `A` -> cursor left
+- `B` -> cursor right
+- `C` -> cursor up
+- `D` -> cursor down
+- hold `A+B` -> cycle tool
+- hold `C+D` -> build at cursor
+- hold `A+D` -> end year
+- hold `A+C+D` -> exit back to launcher
+
+## Button mapping in `ChessApp`
+- `A` -> cursor left
+- `B` -> cursor right
+- `C` -> cursor up
+- `D` -> cursor down
+- hold `A+B` -> select / move piece
+- hold `C+D` -> cancel selection
+- hold `A+C+D` -> exit back to launcher
+
+## Button mapping in `CodeeLauncherApp`
+- `A/B` -> select game
+- `C` or `D` -> start selected game
+- hold `A+C+D` while in a game -> return to launcher
 
 ## Typical integration on Codee
 Wire these adapters to your board-specific display/buttons/buzzer implementation.
@@ -49,13 +76,20 @@ while True:
 For local logic testing without hardware:
 
 ```python
-from ports.codee import CodeeAudio, CodeeDisplay, CodeeInput, CodeeSave, Game2048App, MemoryDisplayBackend
+from ports.codee import (
+    CodeeAudio,
+    CodeeDisplay,
+    CodeeInput,
+    CodeeLauncherApp,
+    CodeeSave,
+    MemoryDisplayBackend,
+)
 
 backend = MemoryDisplayBackend(128, 128)
 display = CodeeDisplay(backend)
 inputs = CodeeInput(lambda: 0)
 audio = CodeeAudio()
-save = CodeeSave("/tmp/game_2048.json")
-app = Game2048App(display, inputs, audio, save)
+save = CodeeSave("/tmp/codee_launcher.json")
+app = CodeeLauncherApp(display, inputs, audio, save)
 app.step()
 ```

@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "author": "CircuitHack",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "board-esp32-s3-devkitc-1", "id": "esp", "top": -10, "left": -4, "attrs": {} },
+    { "type": "wokwi-pushbutton", "id": "btnA", "top": -108, "left": 248, "attrs": { "key": "A", "label": "A" } },
+    { "type": "wokwi-pushbutton", "id": "btnB", "top": -60, "left": 248, "attrs": { "key": "S", "label": "B" } },
+    { "type": "wokwi-pushbutton", "id": "btnC", "top": -12, "left": 248, "attrs": { "key": "D", "label": "C" } },
+    { "type": "wokwi-pushbutton", "id": "btnD", "top": 36, "left": 248, "attrs": { "key": "F", "label": "D" } }
+  ],
+  "connections": [
+    [ "esp:TX", "$serialMonitor:RX", "", [] ],
+    [ "esp:RX", "$serialMonitor:TX", "", [] ],
+
+    [ "btnA:1.l", "esp:4", "green", [ "v0" ] ],
+    [ "btnA:2.l", "esp:GND.1", "black", [ "v0" ] ],
+
+    [ "btnB:1.l", "esp:5", "green", [ "v0" ] ],
+    [ "btnB:2.l", "esp:GND.1", "black", [ "v0" ] ],
+
+    [ "btnC:1.l", "esp:6", "green", [ "v0" ] ],
+    [ "btnC:2.l", "esp:GND.1", "black", [ "v0" ] ],
+
+    [ "btnD:1.l", "esp:7", "green", [ "v0" ] ],
+    [ "btnD:2.l", "esp:GND.1", "black", [ "v0" ] ]
+  ]
+}

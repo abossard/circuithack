@@ -34,7 +34,14 @@ uv run circuithack-cli flash-firmware --port /dev/cu.usbmodemXXXX --source local
 uv run circuithack-cli decode-nvs --nvs-path backups/codee-nvs-YYYYmmdd-HHMMSS.bin
 uv run circuithack-cli sync-games --dest-root third_party_games
 uv run python scripts/sync_game_sources.py --dest-root third_party_games --source thumby-color-games
+uv run circuithack-wokwi lint wokwi/codee-sim
 ```
+
+## Wokwi token
+If you place `WOKWI_CLI_TOKEN=...` in a repo-local `.env`, Python entrypoints auto-load it:
+- `circuithack-cli`
+- `circuithack-mcp`
+- `circuithack-wokwi`
 
 ## MCP server
 Run local MCP server:
@@ -63,7 +70,8 @@ Available MCP tools:
   - `codee_input.py`
   - `codee_audio.py`
   - `codee_save.py`
-- First game target included: `ports/codee/game_2048.py`
+- Included games: `ports/codee/game_2048.py`, `ports/codee/game_tinycity.py`, `ports/codee/game_chess.py`
+- Multi-game launcher: `ports/codee/game_launcher.py`
 - Integration notes: `ports/codee/README.md`
 
 ## Upstream game source sync

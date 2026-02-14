@@ -6,6 +6,7 @@ import json
 from .backup import backup_full_flash, backup_state_partitions, restore_full_flash_backup
 from .codee import FIRMWARE_SOURCES, decode_codee_savegame, flash_codee_firmware
 from .device import detect_codee_candidates, list_serial_devices, resolve_codee_port
+from .env import auto_load_env
 from .firmware import download_asset, latest_stock_asset
 from .flash import enter_programmer_mode, write_flash_zero
 from .gamesync import sync_game_sources
@@ -250,6 +251,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main() -> None:
+    auto_load_env()
     parser = build_parser()
     args = parser.parse_args()
     try:
