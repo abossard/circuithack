@@ -34,6 +34,9 @@ uv run circuithack-cli flash-firmware --port /dev/cu.usbmodemXXXX --source local
 uv run circuithack-cli decode-nvs --nvs-path backups/codee-nvs-YYYYmmdd-HHMMSS.bin
 uv run circuithack-cli sync-games --dest-root third_party_games
 uv run python scripts/sync_game_sources.py --dest-root third_party_games --source thumby-color-games
+uv run circuithack-cli sync-gamewatch-source --repo-dir third_party/M5Tab5-Game-and-Watch
+uv run circuithack-cli download-gamewatch-assets --out-dir downloads/gamewatch --rom-base-url https://example.com/roms --artwork-base-url https://example.com/artworks --rom-extension .gw.gz --artwork-extension .jpg.gz
+uv run circuithack-cli codee-gamewatch-plan
 uv run circuithack-wokwi lint wokwi/codee-sim
 ```
 
@@ -63,6 +66,9 @@ Available MCP tools:
 - `flash_codee_firmware`
 - `decode_codee_nvs_backup`
 - `sync_codee_game_sources`
+- `sync_codee_gamewatch_source`
+- `download_codee_gamewatch_assets`
+- `codee_gamewatch_adaptation_plan`
 
 ## Codee port kit
 - `ports/codee/` contains a MicroPython adapter layer:
@@ -78,6 +84,31 @@ Available MCP tools:
 - `sync-games` clones/updates curated upstream repositories into `third_party_games/`.
 - It writes commit-locked metadata in `third_party_games/sources.lock.json`.
 - You can pass repeated `--source` values (source id or `owner/repo`) to sync only a subset.
+
+## Game & Watch (M5Tab5) integration for Codee
+- `sync-gamewatch-source` clones/updates `tobozo/M5Tab5-Game-and-Watch`.
+- `download-gamewatch-assets` downloads:
+  - firmware `.bin` from `--firmware-url` or release assets, and
+  - ROMs from explicit `--rom-url` entries, or from `--rom-base-url` + `--rom-id`.
+  - artworks from explicit `--artwork-url` entries, or from `--artwork-base-url` + `--rom-id`.
+- `codee-gamewatch-plan` prints a Codee adaptation checklist.
+- Default behavior prepares a LittleFS-root bundle in `downloads/gamewatch/littlefs`.
+- LittleFS bundling auto-unpacks `.gw.gz` -> `.gw` and `.jpg.gz` -> `.jpg` for on-device compatibility.
+- Upstream currently publishes no GitHub release assets, so in practice you usually pass explicit URLs.
+- No-SD setup: use LittleFS only, and ensure each ROM has matching artwork (`gnw_xxx.gw(.gz)` + `gnw_xxx.jpg(.gz)`).
+- The upstream project does not include redistributable ROM files/artworks; use your own legally obtained sources.
+
+### Codee C++ standalone port (no SD, no touch, no USB HID, no RTC RAM)
+- Added in `third_party/Codee-Firmware/main/src/GameWatchPort/`.
+- Uses Codee `Display`, `Input`, `SPIFFS`, and `ChirpSystem`.
+- Forces a Codee-friendly model:
+  - ROM discovery from `/spiffs` root (`gnw_*.gw`)
+  - 4-button mapping (`A/B/C/D`) with combo actions
+  - no SD card picker, no touch gestures, no USB keyboard/gamepad path
+- Build switch: set `CODEE_GAMEWATCH_STANDALONE=1` when configuring `Codee-Firmware`.
+  - Example: `idf.py -D CODEE_GAMEWATCH_STANDALONE=1 build`
+- If you only want ROMs (no artwork dependency), use:
+  - `uv run circuithack-cli download-gamewatch-assets ... --allow-missing-artworks`
 
 ## Reliable Mac connection checklist (Codee)
 - Use a known USB data cable (not charge-only).

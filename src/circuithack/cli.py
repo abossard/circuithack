@@ -9,6 +9,11 @@ from .device import detect_codee_candidates, list_serial_devices, resolve_codee_
 from .env import auto_load_env
 from .firmware import download_asset, latest_stock_asset
 from .flash import enter_programmer_mode, write_flash_zero
+from .gamewatch import (
+    codee_gamewatch_adaptation_report,
+    download_gamewatch_assets,
+    sync_gamewatch_source,
+)
 from .gamesync import sync_game_sources
 from .micropython import build_and_flash_micropython
 from .runner import run_script
@@ -155,6 +160,41 @@ def cmd_sync_games(args: argparse.Namespace) -> None:
     )
 
 
+def cmd_sync_gamewatch_source(args: argparse.Namespace) -> None:
+    _print(
+        sync_gamewatch_source(
+            repo_dir=args.repo_dir,
+        )
+    )
+
+
+def cmd_download_gamewatch(args: argparse.Namespace) -> None:
+    _print(
+        download_gamewatch_assets(
+            out_dir=args.out_dir,
+            repo_dir=args.repo_dir,
+            firmware_url=args.firmware_url,
+            rom_urls=args.rom_url,
+            rom_base_url=args.rom_base_url,
+            rom_ids=args.rom_id,
+            rom_extension=args.rom_extension,
+            artwork_urls=args.artwork_url,
+            artwork_base_url=args.artwork_base_url,
+            artwork_extension=args.artwork_extension,
+            require_artworks=not args.allow_missing_artworks,
+            prepare_littlefs_bundle=not args.skip_littlefs_bundle,
+            littlefs_bundle_dir=args.littlefs_bundle_dir,
+            littlefs_max_bytes=args.littlefs_max_bytes,
+            sync_source=not args.skip_source_sync,
+            include_release_assets=not args.skip_release_assets,
+        )
+    )
+
+
+def cmd_codee_gamewatch_plan(_: argparse.Namespace) -> None:
+    _print(codee_gamewatch_adaptation_report())
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="circuithack-cli")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -246,6 +286,74 @@ def build_parser() -> argparse.ArgumentParser:
         help="Source id or owner/repo. Repeat to sync only selected sources.",
     )
     s.set_defaults(func=cmd_sync_games)
+
+    s = sub.add_parser(
+        "sync-gamewatch-source",
+        help="Clone/update tobozo/M5Tab5-Game-and-Watch source in local third_party.",
+    )
+    s.add_argument("--repo-dir", default="third_party/M5Tab5-Game-and-Watch")
+    s.set_defaults(func=cmd_sync_gamewatch_source)
+
+    s = sub.add_parser(
+        "download-gamewatch-assets",
+        help="Download Game&Watch firmware/ROM assets for Codee adaptation.",
+    )
+    s.add_argument("--out-dir", default="downloads/gamewatch")
+    s.add_argument("--repo-dir", default="third_party/M5Tab5-Game-and-Watch")
+    s.add_argument("--firmware-url")
+    s.add_argument(
+        "--rom-url",
+        action="append",
+        help="Explicit ROM URL. Repeat for multiple files.",
+    )
+    s.add_argument(
+        "--rom-base-url",
+        help="Base URL used to build ROM URLs as <base>/<rom-id><rom-extension>.",
+    )
+    s.add_argument(
+        "--rom-id",
+        action="append",
+        help="ROM id (e.g. gnw_pchute). Used with --rom-base-url; defaults to full set.",
+    )
+    s.add_argument("--rom-extension", default=".gw.gz")
+    s.add_argument(
+        "--artwork-url",
+        action="append",
+        help="Explicit artwork URL. Repeat for multiple files.",
+    )
+    s.add_argument(
+        "--artwork-base-url",
+        help="Base URL used to build artwork URLs as <base>/<rom-id><artwork-extension>.",
+    )
+    s.add_argument("--artwork-extension", default=".jpg.gz")
+    s.add_argument(
+        "--allow-missing-artworks",
+        action="store_true",
+        help="Allow ROM-only download. Disabled by default because emulator expects matching artworks.",
+    )
+    s.add_argument(
+        "--skip-littlefs-bundle",
+        action="store_true",
+        help="Skip LittleFS root bundle creation.",
+    )
+    s.add_argument(
+        "--littlefs-bundle-dir",
+        help="Output directory for LittleFS-ready root files (defaults to <out-dir>/littlefs).",
+    )
+    s.add_argument(
+        "--littlefs-max-bytes",
+        type=int,
+        help="Optional max allowed total bytes for LittleFS bundle.",
+    )
+    s.add_argument("--skip-source-sync", action="store_true")
+    s.add_argument("--skip-release-assets", action="store_true")
+    s.set_defaults(func=cmd_download_gamewatch)
+
+    s = sub.add_parser(
+        "codee-gamewatch-plan",
+        help="Show adaptation checklist from M5Tab5 Game&Watch to Codee.",
+    )
+    s.set_defaults(func=cmd_codee_gamewatch_plan)
 
     return p
 

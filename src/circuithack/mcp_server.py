@@ -20,6 +20,11 @@ from .device import (
 )
 from .firmware import download_asset, latest_stock_asset
 from .flash import enter_programmer_mode, write_flash_zero
+from .gamewatch import (
+    codee_gamewatch_adaptation_report,
+    download_gamewatch_assets as download_gamewatch_assets_flow,
+    sync_gamewatch_source,
+)
 from .gamesync import sync_game_sources
 from .micropython import build_and_flash_micropython
 from .runner import run_script, run_script_paste_mode
@@ -257,6 +262,65 @@ def sync_codee_game_sources(
         manifest_path=manifest_path,
         selected_sources=source,
     )
+
+
+@mcp.tool(description="Clone/update tobozo/M5Tab5-Game-and-Watch source repo")
+def sync_codee_gamewatch_source(
+    repo_dir: str = "third_party/M5Tab5-Game-and-Watch",
+) -> dict:
+    """Clone or fast-forward update the upstream M5Tab5 Game&Watch project."""
+    return sync_gamewatch_source(repo_dir=repo_dir)
+
+
+@mcp.tool(description="Download Game&Watch firmware and ROM assets for Codee adaptation")
+def download_codee_gamewatch_assets(
+    out_dir: str = "downloads/gamewatch",
+    repo_dir: str = "third_party/M5Tab5-Game-and-Watch",
+    firmware_url: str | None = None,
+    rom_url: list[str] | None = None,
+    rom_base_url: str | None = None,
+    rom_id: list[str] | None = None,
+    rom_extension: str = ".gw.gz",
+    artwork_url: list[str] | None = None,
+    artwork_base_url: str | None = None,
+    artwork_extension: str = ".jpg.gz",
+    require_artworks: bool = True,
+    prepare_littlefs_bundle: bool = True,
+    littlefs_bundle_dir: str | None = None,
+    littlefs_max_bytes: int | None = None,
+    sync_source: bool = True,
+    include_release_assets: bool = True,
+) -> dict:
+    """
+    Download firmware/ROM artifacts:
+    - explicit URLs (firmware_url/rom_url), or
+    - derived ROM URLs from rom_base_url + rom_id, or
+    - fallback to any matching GitHub release assets.
+    """
+    return download_gamewatch_assets_flow(
+        out_dir=out_dir,
+        repo_dir=repo_dir,
+        firmware_url=firmware_url,
+        rom_urls=rom_url,
+        rom_base_url=rom_base_url,
+        rom_ids=rom_id,
+        rom_extension=rom_extension,
+        artwork_urls=artwork_url,
+        artwork_base_url=artwork_base_url,
+        artwork_extension=artwork_extension,
+        require_artworks=require_artworks,
+        prepare_littlefs_bundle=prepare_littlefs_bundle,
+        littlefs_bundle_dir=littlefs_bundle_dir,
+        littlefs_max_bytes=littlefs_max_bytes,
+        sync_source=sync_source,
+        include_release_assets=include_release_assets,
+    )
+
+
+@mcp.tool(description="Show a practical adaptation checklist from M5Tab5 Game&Watch to Codee")
+def codee_gamewatch_adaptation_plan() -> dict:
+    """Return an architecture/configuration checklist to adapt the emulator for Codee."""
+    return codee_gamewatch_adaptation_report()
 
 
 def main() -> None:
