@@ -22,6 +22,7 @@ dist/
 # Local artifacts and hardware dumps
 backups/
 downloads/
+roms/
 *.bin
 *.img
 *.uf2
