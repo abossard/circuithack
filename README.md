@@ -85,6 +85,21 @@ Available MCP tools:
 - It writes commit-locked metadata in `third_party_games/sources.lock.json`.
 - You can pass repeated `--source` values (source id or `owner/repo`) to sync only a subset.
 
+## SpaceTrader Palm asset conversion
+- Convert Palm `.rsrc` graphics to Bit-compatible RGB565 `.raw` files:
+```bash
+uv run python scripts/spacetrader_preview.py \
+  --source-dir /Users/abossard/Downloads/SpaceTraderSource/Rsc \
+  --header /Users/abossard/Downloads/SpaceTraderSource/Rsc/MerchantGraphics.h \
+  --out-dir downloads/SpaceTraderSource/converted_bit_assets \
+  --bit-spiffs-dir third_party/Bit-Firmware/spiffs_image/Games/SpaceTrader
+```
+- Output includes:
+  - extracted PNG previews,
+  - RGB565 `.raw` assets,
+  - `assets_manifest.json` with width/height/size and source variant,
+  - optional sync into Bit-Firmware SPIFFS game folder.
+
 ## Game & Watch (M5Tab5) integration for Codee
 - `sync-gamewatch-source` clones/updates `tobozo/M5Tab5-Game-and-Watch`.
 - `download-gamewatch-assets` downloads:
