@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+from pathlib import Path
 
 from .backup import backup_full_flash, backup_state_partitions, restore_full_flash_backup
 from .codee import FIRMWARE_SOURCES, decode_codee_savegame, flash_codee_firmware
@@ -16,6 +17,7 @@ from .gamewatch import (
 )
 from .gamesync import sync_game_sources
 from .micropython import build_and_flash_micropython
+from .rompatch import apply_ips_patch_file
 from .runner import run_script
 
 
@@ -195,6 +197,30 @@ def cmd_codee_gamewatch_plan(_: argparse.Namespace) -> None:
     _print(codee_gamewatch_adaptation_report())
 
 
+def cmd_apply_ips(args: argparse.Namespace) -> None:
+    if args.in_place and args.out_path:
+        raise ValueError("Use either --in-place or --out-path, not both")
+    if args.in_place and not args.force:
+        raise ValueError("--in-place requires --force")
+
+    rom_path = Path(args.rom_path)
+    if args.in_place:
+        output_path = rom_path
+    elif args.out_path:
+        output_path = Path(args.out_path)
+    else:
+        output_path = rom_path.with_name(f"{rom_path.stem}.patched{rom_path.suffix}")
+
+    _print(
+        apply_ips_patch_file(
+            rom_path=rom_path,
+            patch_path=args.patch_path,
+            output_path=output_path,
+            overwrite=args.force,
+        )
+    )
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="circuithack-cli")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -354,6 +380,14 @@ def build_parser() -> argparse.ArgumentParser:
         help="Show adaptation checklist from M5Tab5 Game&Watch to Codee.",
     )
     s.set_defaults(func=cmd_codee_gamewatch_plan)
+
+    s = sub.add_parser("apply-ips", help="Apply an IPS patch to a ROM file.")
+    s.add_argument("--rom-path", required=True, help="Input ROM path.")
+    s.add_argument("--patch-path", required=True, help="IPS patch path.")
+    s.add_argument("--out-path", help="Output ROM path (default: <rom>.patched<suffix>).")
+    s.add_argument("--in-place", action="store_true", help="Write output over the input ROM.")
+    s.add_argument("--force", action="store_true", help="Overwrite existing output path.")
+    s.set_defaults(func=cmd_apply_ips)
 
     return p
 
